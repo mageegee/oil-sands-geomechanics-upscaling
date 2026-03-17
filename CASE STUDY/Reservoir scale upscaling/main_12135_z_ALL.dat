@@ -1,0 +1,69 @@
+model new
+model large-strain off
+model config fluid
+model fluid active on
+model configure plugins
+[global size = 5]
+zone create brick size [size], [size], [size],...;20 zones in each axis
+                  point 0   0,   0,   0,...
+                  point 1   1,   0,   0 ... ;1m x 1m x 1m dimension
+                  point 2   0,   1,   0 ...
+                  point 3   0,   0,   1
+zone face skin
+
+program call 'Read_12135_set_mod'
+[readRealization]
+;[readperm]
+
+;=======fluid boundary condition=======
+zone fluid biot off ;[off] compressible water [on] imcompressible water / compressible grain
+zone initialize fluid-density 1
+zone gridpoint initialize fluid-tension -1e15 ; fluid tension limit, water is unbreakable
+zone gridpoint initialize fluid-modulus 2e4 ;compressibility of water (opposite force)
+;=========saturation====================
+zone gridpoint initialize saturation 1.0;fully saturated cube
+zone gridpoint initialize pore-pressure 981
+zone face apply pore-pressure 981;pressure boundary = permeable boundary
+;=======bondary condition=======
+zone initialize stress xx -2000. yy -2000. zz -2000. ;initial stress
+zone face apply stress-norm -2000 range group 'North' or 'South'
+zone face apply stress-norm -2000 range group 'East' or 'West'
+zone gridpoint initialize velocity (0,0,0)
+zone gridpoint initialize displacement (0,0,0)
+zone face apply velocity-z 0 range group 'Bottom'
+zone face apply velocity-z -5e-6 range group 'Top'
+
+program call 'fish'
+history interval 100
+model fluid active on
+model mechanical slave on
+;model fluid slave on
+model fluid substep 1
+model mechanical substep 1
+model fluid timestep fix 1e-6
+zone gridpoint initialize fluid-modulus 5e4
+model cycle 4000
+[update_perm]
+zone gridpoint initialize fluid-modulus 2e4
+model fluid timestep fix 1e-4
+history interval 300
+model cycle 1000
+[update_perm]
+model cycle 1500
+[update_perm]
+model cycle 2000
+[update_perm]
+model cycle 4000
+[update_perm]
+model cycle 6000
+
+
+model save 'adjust_12135_z_upscale_modified'
+
+;
+history export '9' vs '5' table 'adjust_12135_z_upscale_qa_modified'
+history export '10' vs '5' table 'adjust_12135_z_upscale_vol_modified'
+history export '11' vs '5' table 'adjust_12135_z_upscale_pp_modified'
+table 'adjust_12135_z_upscale_qa_modified' export 'adjust_12135_z_upscale_qa_modified' truncate
+table 'adjust_12135_z_upscale_vol_modified' export 'adjust_12135_z_upscale_vol_modified' truncate
+table 'adjust_12135_z_upscale_pp_modified' export 'adjust_12135_z_upscale_pp_modified' truncate

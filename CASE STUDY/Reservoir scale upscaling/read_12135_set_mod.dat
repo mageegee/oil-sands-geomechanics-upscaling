@@ -1,0 +1,148 @@
+;;
+program call 'cohy_table_12135_mask'
+program call 'cohx_table_12135_mask'
+program call 'cohz_table_12135_mask'
+program call 'fricy_table_12135_mask'
+program call 'fricx_table_12135_mask'
+program call 'fricz_table_12135_mask'
+program call 'dily_table_12135_mask'
+program call 'dilx_table_12135_mask'
+program call 'dilz_table_12135_mask'
+
+
+fish define readRealization
+    local f = file.open('input_parameters_upscale_combined_peak_12135_mask.dat','read','text')
+    ;local p = file.open('flow_out_y_step1.dat','read','text')
+    local p = file.open('flow_out_z_step1.dat','read','text')
+    ;local p = file.open('flow_out_x_step1_set.dat','read','text')
+
+    local parameter_input = file.read(f,125)
+    local perm_input = file.read(p,125)
+    local i=1
+    local zp = zone.head
+    loop while zp # NULL
+        global _px = string.token(perm_input(i),1)
+    ;    global _flowx = _px*1e-9
+        global _py = string.token(perm_input(i),2)
+    ;    global _flowy = _py*1e-9
+        global _pz = string.token(perm_input(i),3)
+    ;    global _flowz = _pz*1e-9
+        ;a= zone.id(zp)
+        local _Ex = string.token(parameter_input(i),5)
+        local _Ey = string.token(parameter_input(i),6)
+        local _Ez = string.token(parameter_input(i),7)
+        local _nuxy = string.token(parameter_input(i),8)
+        local _nuyz = string.token(parameter_input(i),9)
+        local _nuzx = string.token(parameter_input(i),10)
+        local _Kx = string.token(parameter_input(i),11)
+        local _Ky = string.token(parameter_input(i),12)
+        local _Kz = string.token(parameter_input(i),13)
+        local _Gx = string.token(parameter_input(i),14)
+        local _Gy = string.token(parameter_input(i),15)
+        local _Gz = string.token(parameter_input(i),16)
+        local _fricx = string.token(parameter_input(i),17)
+        local _fricy = string.token(parameter_input(i),18)
+        local _fricz = string.token(parameter_input(i),19)
+        local _dilx = string.token(parameter_input(i),20)
+        local _dily = string.token(parameter_input(i),21)
+        local _dilz = string.token(parameter_input(i),22)
+        local _cohx = string.token(parameter_input(i),23)
+        local _cohy = string.token(parameter_input(i),24)
+        local _cohz = string.token(parameter_input(i),25)
+        ;_porosity = 0.35
+;        _table_cohesion_x = 'cohx_47';string(zp)
+;        _table_cohesion_y = 'cohy_47';string(zp)
+;        _table_cohesion_z = 'cohz_47';string(zp)
+;        _table_friction_x = 'fricx_47';string(zp)
+;        _table_friction_y = 'fricy_47';string(zp)
+;        _table_friction_z = 'fricz_47';string(zp)
+;        _table_dilation_x = 'dilx_47';string(zp)
+;        _table_dilation_y = 'dily_47';string(zp)
+;        _table_dilation_z = 'dilz_47';string(zp)
+
+        _table_cohesion_x = 'cohx_'+string(zp)
+        _table_cohesion_y = 'cohy_'+string(zp)
+        _table_cohesion_z = 'cohz_'+string(zp)
+        _table_friction_x = 'fricx_'+string(zp)
+        _table_friction_y = 'fricy_'+string(zp)
+        _table_friction_z = 'fricz_'+string(zp)
+        _table_dilation_x = 'dilx_'+string(zp)
+        _table_dilation_y = 'dily_'+string(zp)
+        _table_dilation_z = 'dilz_'+string(zp)
+;       
+        zone.model(zp) = "anisotropic-strain-softening"
+        zone.prop (zp, 'Ex') = _Ex*1.05
+        zone.prop (zp, 'Ey') = _Ey*1.05
+        zone.prop (zp, 'Ez') = _Ez*1.05
+        zone.prop (zp, 'nuxy') = _nuxy;*0.9
+        zone.prop (zp, 'nuyz') = _nuyz;*0.9
+        zone.prop (zp, 'nuzx') = _nuzx;*0.9
+        zone.prop (zp, 'Kx') = _Kx
+        zone.prop (zp, 'Ky') = _Ky
+        zone.prop (zp, 'Kz') = _Kz
+        zone.prop (zp, 'Gx') = _Gx
+        zone.prop (zp, 'Gy') = _Gy
+        zone.prop (zp, 'Gz') = _Gz
+        zone.prop (zp, 'friction-x') = _fricx
+        zone.prop (zp, 'friction-y') = _fricy
+        zone.prop (zp, 'friction-z') = _fricz
+        zone.prop (zp, 'dilation-x') = _dilx
+        zone.prop (zp, 'dilation-y') = _dily
+        zone.prop (zp, 'dilation-z') = _dilz
+        zone.prop (zp, 'cohesion-x') = _cohx
+        zone.prop (zp, 'cohesion-y') = _cohy
+        zone.prop (zp, 'cohesion-z') = _cohz
+        zone.prop (zp, 'table-cohesion-x') =  _table_cohesion_x
+        zone.prop (zp, 'table-cohesion-y') =  _table_cohesion_y
+        zone.prop (zp, 'table-cohesion-z') =  _table_cohesion_z
+        zone.prop (zp, 'table-dilation-x') =  _table_dilation_x
+        zone.prop (zp, 'table-dilation-y') =  _table_dilation_y
+        zone.prop (zp, 'table-dilation-z') =  _table_dilation_z
+        zone.prop (zp, 'table-friction-x') =  _table_friction_x
+        zone.prop (zp, 'table-friction-y') =  _table_friction_y
+        zone.prop (zp, 'table-friction-z') =  _table_friction_z
+        zone.fluid.model(zp) = "anisotropic"
+        zone.fluid.prop(zp, 'permeability-xx') = _px*1e-9
+        zone.fluid.prop(zp, 'permeability-yy') = _py*1e-9
+        zone.fluid.prop(zp, 'permeability-zz') = _pz*1e-9
+        zp= zone.next(zp)
+        i=i+1
+    endloop
+end
+-fish define update_perm
+    local zp = zone.head
+    loop while zp # NULL
+        local epz_ = zone.prop(zp,'strain-shear-plastic-z')
+        local epx_ = zone.prop(zp,'strain-shear-plastic-x')
+        local epy_ = zone.prop(zp,'strain-shear-plastic-y')
+        global permx = zone.fluid.prop(zp, 'permeability-xx')
+        global permy = zone.fluid.prop(zp, 'permeability-yy')
+        global permz = zone.fluid.prop(zp, 'permeability-zz')
+        global ev_ =(0.35+zone.strain.vol.inc(zp))/(1+zone.strain.vol.inc(zp))-0.35
+        global knew1_ = permx*math.exp(ev_)*math.exp(epx_)
+        global knew2_ = permy*math.exp(ev_)*math.exp(epy_)
+        global knew3_ = permz*math.exp(ev_)*math.exp(epz_)
+        zone.fluid.prop(zp, 'permeability-xx') = knew1_
+        zone.fluid.prop(zp, 'permeability-yy') = knew2_
+        zone.fluid.prop(zp, 'permeability-zz') = knew3_
+        zp = zone.next(zp)
+    endloop
+end
+
+;fish define readperm
+;    local p = file.open('flow_out_z_step1.dat','read','text')
+;    local z = file.open('zone_groups.dat','read','text')
+;    local zp = zone.head    
+;    local perm_input = file.read(p,125)
+;    loop local ii (1,125,1)
+;        local _px = string.token(perm_input(ii),1)
+;        global _flowx=_px*1e-9
+;        local _py = string.token(perm_input(ii),2)
+;        global _flowy=_py*1e-9
+;        local _pz = string.token(perm_input(ii),3)
+;        global _flowz=_pz*1e-9
+;        zone.fluid.prop(zp, 'permeability-xx')=_flowx
+;        zone.fluid.prop(zp, 'permeability-yy')=_flowy
+;        zone.fluid.prop(zp, 'permeability-zz')=_flowz
+;    endloop
+;end
