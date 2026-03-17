@@ -5,9 +5,10 @@ This repository contains the source code and scripts used in the MSc thesis:
 Ou, X. (2026). Smart Coupled Flow–Geomechanical Upscaling Technique for Oil Sands.
 
 University of Alberta.
+
 ## Contents
 
-- CNN model for predicting stress–strain response
+- 3DCNN model for predicting soil response
 - Data preprocessing scripts
 - Upscaling procedures for anisotropic parameters
 - FLAC3D implementation of anisotropic strain-softening model
