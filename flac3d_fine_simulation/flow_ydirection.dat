@@ -1,0 +1,130 @@
+
+;================================================test_z==========================================================
+;step1
+fish define fh_y_z_1
+    global flow_y_z_1=-list.sum(zone.flow.z(::zone.list))/(size*size*size)/1000/md
+end
+fish define fh_y_y_1
+    global flow_y_y_1=-list.sum(zone.flow.y(::zone.list))/(size*size*size)/1000/md
+end
+fish define fh_y_x_1
+    global flow_y_x_1=-list.sum(zone.flow.x(::zone.list))/(size*size*size)/1000/md
+end
+;step2
+fish define fh_y_z_2
+    global flow_y_z_2=-list.sum(zone.flow.z(::zone.list))/(size*size*size)/1000/md
+end
+fish define fh_y_y_2
+    global flow_y_y_2=-list.sum(zone.flow.y(::zone.list))/(size*size*size)/1000/md
+end
+fish define fh_y_x_2
+    global flow_y_x_2=-list.sum(zone.flow.x(::zone.list))/(size*size*size)/1000/md
+end
+;step3
+fish define fh_y_z_3
+    global flow_y_z_3=-list.sum(zone.flow.z(::zone.list))/(size*size*size)/1000/md
+end
+fish define fh_y_y_3
+    global flow_y_y_3=-list.sum(zone.flow.y(::zone.list))/(size*size*size)/1000/md
+end
+fish define fh_y_x_3
+    global flow_y_x_3=-list.sum(zone.flow.x(::zone.list))/(size*size*size)/1000/md
+end
+;step4
+fish define fh_y_z_4
+    global flow_y_z_4=-list.sum(zone.flow.z(::zone.list))/(size*size*size)/1000/md
+end
+fish define fh_y_y_4
+    global flow_y_y_4=-list.sum(zone.flow.y(::zone.list))/(size*size*size)/1000/md
+end
+fish define fh_y_x_4
+    global flow_y_x_4=-list.sum(zone.flow.x(::zone.list))/(size*size*size)/1000/md
+end
+;step5
+fish define fh_y_z_5
+    global flow_y_z_5=-list.sum(zone.flow.z(::zone.list))/(size*size*size)/1000/md
+end
+fish define fh_y_y_5
+    global flow_y_y_5=-list.sum(zone.flow.y(::zone.list))/(size*size*size)/1000/md
+end
+fish define fh_y_x_5
+    global flow_y_x_5=-list.sum(zone.flow.x(::zone.list))/(size*size*size)/1000/md
+end
+;step5
+fish define fh_y_z_6
+    global flow_y_z_6=-list.sum(zone.flow.z(::zone.list))/(size*size*size)/1000/md
+end
+fish define fh_y_y_6
+    global flow_y_y_6=-list.sum(zone.flow.y(::zone.list))/(size*size*size)/1000/md
+end
+fish define fh_y_x_6
+    global flow_y_x_6=-list.sum(zone.flow.x(::zone.list))/(size*size*size)/1000/md
+end
+fish history name ['flow_y_z_1_'+string(realization_number)] flow_y_z_1
+fish history name ['flow_y_y_1_'+string(realization_number)] flow_y_y_1
+fish history name ['flow_y_x_1_'+string(realization_number)] flow_y_x_1
+fish history name ['flow_y_z_2_'+string(realization_number)] flow_y_z_2
+fish history name ['flow_y_y_2_'+string(realization_number)] flow_y_y_2
+fish history name ['flow_y_x_2_'+string(realization_number)] flow_y_x_2
+fish history name ['flow_y_z_3_'+string(realization_number)] flow_y_z_3
+fish history name ['flow_y_y_3_'+string(realization_number)] flow_y_y_3
+fish history name ['flow_y_x_3_'+string(realization_number)] flow_y_x_3
+fish history name ['flow_y_z_4_'+string(realization_number)] flow_y_z_4
+fish history name ['flow_y_y_4_'+string(realization_number)] flow_y_y_4
+fish history name ['flow_y_x_4_'+string(realization_number)] flow_y_x_4
+fish history name ['flow_y_z_5_'+string(realization_number)] flow_y_z_5
+fish history name ['flow_y_y_5_'+string(realization_number)] flow_y_y_5
+fish history name ['flow_y_x_5_'+string(realization_number)] flow_y_x_5
+fish history name ['flow_y_z_6_'+string(realization_number)] flow_y_z_6
+fish history name ['flow_y_y_6_'+string(realization_number)] flow_y_y_6
+fish history name ['flow_y_x_6_'+string(realization_number)] flow_y_x_6
+
+fish define flow_out_y_step1
+    local output = file.open('flow_out_y_step1.dat','append','text'); append new lines for each model running
+    local w = list
+    local a_ii=string.build("%1,%2,%3",string(flow_y_x_1),string(flow_y_y_1),string(flow_y_z_1))
+    w=list.append(w,a_ii)
+    file.write(output,w)
+    file.close(output)
+end
+fish define flow_out_y_step2
+    local output = file.open('flow_out_y_step2.dat','append','text'); append new lines for each model running
+    local w = list
+    local a_ii=string.build("%1,%2,%3",string(flow_y_x_2),string(flow_y_y_2),string(flow_y_z_2))
+    w=list.append(w,a_ii)
+    file.write(output,w)
+    file.close(output)
+end
+fish define flow_out_y_step3
+    local output = file.open('flow_out_y_step3.dat','append','text'); append new lines for each model running
+    local w = list
+    local a_ii=string.build("%1,%2,%3",string(flow_y_x_3),string(flow_y_y_3),string(flow_y_z_3))
+    w=list.append(w,a_ii)
+    file.write(output,w)
+    file.close(output)
+end
+
+fish define flow_out_y_step4
+    local output = file.open('flow_out_y_step4.dat','append','text'); append new lines for each model running
+    local w = list
+    local a_ii=string.build("%1,%2,%3",string(flow_y_x_4),string(flow_y_y_4),string(flow_y_z_4))
+    w=list.append(w,a_ii)
+    file.write(output,w)
+    file.close(output)
+end
+fish define flow_out_y_step5
+    local output = file.open('flow_out_y_step5.dat','append','text'); append new lines for each model running
+    local w = list
+    local a_ii=string.build("%1,%2,%3",string(flow_y_x_5),string(flow_y_y_5),string(flow_y_z_5))
+    w=list.append(w,a_ii)
+    file.write(output,w)
+    file.close(output)
+end
+fish define flow_out_y_step6
+    local output = file.open('flow_out_y_step6.dat','append','text'); append new lines for each model running
+    local w = list
+    local a_ii=string.build("%1,%2,%3",string(flow_y_x_6),string(flow_y_y_6),string(flow_y_z_6))
+    w=list.append(w,a_ii)
+    file.write(output,w)
+    file.close(output)
+end

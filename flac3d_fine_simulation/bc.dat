@@ -1,0 +1,130 @@
+;================================================test_z==========================================================
+fish define bc_setup_pp
+    command
+        zone face apply stress-norm -2000 range group 'North' or 'South'
+        zone face apply stress-norm -2000 range group 'East' or 'West' 
+        zone face apply stress-norm -2000 range group 'Top' or 'Bottom'
+    endcommand
+end
+
+fish define bc_setup_z
+    command
+    ;==========fluid flow model=========
+        zone fluid biot off ;[off] compressible water [on] imcompressible water / compressible grain
+        zone initialize fluid-density 1
+        zone gridpoint initialize fluid-tension -1e15 ; fluid tension limit, water is unbreakable
+        zone gridpoint initialize fluid-modulus [fm] ;compressibility of water (opposite force)
+        ;=========saturation====================
+        zone gridpoint initialize saturation 1.0;fully saturated cube
+        zone gridpoint initialize pore-pressure 981
+        zone face apply pore-pressure 981;pressure boundary = permeable boundary
+        ;=======bondary condition=======
+        zone initialize stress xx -2000. yy -2000. zz -2000. ;initial stress
+        zone face apply stress-norm -2000 range group 'North' or 'South'
+        zone face apply stress-norm -2000 range group 'East' or 'West'
+        zone gridpoint initialize velocity (0,0,0)
+        zone gridpoint initialize displacement (0,0,0)
+        zone gridpoint fix velocity-z 0 range group 'Bottom'
+        zone gridpoint fix velocity-z [deform_rate] range group 'Top'
+    endcommand
+end
+fish define bc_removepp_z
+    command
+        zone face apply-remove pore-pressure
+        zone gridpoint fix pore-pressure 1981 range group 'Top'
+        zone gridpoint free pore-pressure range group 'North' or 'South' or 'East' or 'West'
+        zone gridpoint fix pore-pressure 981 range group 'Bottom'
+;        zone gridpoint fix velocity-z [deform_rate] range group 'Top'
+    endcommand
+end
+fish define bc_resetup_z
+    command
+        zone face apply pore-pressure 981 ;pressure boundary = permeable boundary
+        zone face apply stress-norm -2000 range group 'North' or 'South'
+        zone face apply stress-norm -2000 range group 'East' or 'West'
+        zone gridpoint fix velocity-z 0 range group 'Bottom'
+        zone gridpoint fix velocity-z [deform_rate] range group 'Top'
+    endcommand
+end
+
+;================================================test_y==========================================================
+fish define bc_setup_y
+    command
+    ;==========fluid flow model=========
+        zone fluid biot off ;[off] compressible water [on] imcompressible water / compressible grain
+        zone initialize fluid-density 1
+        zone gridpoint initialize fluid-tension -1e15 ; fluid tension limit, water is unbreakable
+        zone gridpoint initialize fluid-modulus [fm] ;compressibility of water (opposite force)
+        ;=========saturation====================
+        zone gridpoint initialize saturation 1.0;fully saturated cube
+        zone gridpoint initialize pore-pressure 981
+        zone face apply pore-pressure 981;pressure boundary = permeable boundary
+        ;=======bondary condition=======
+        zone initialize stress xx -2000. yy -2000. zz -2000. ;initial stress
+        zone face apply stress-norm -2000. range group 'Top' or 'Bottom'
+        zone face apply stress-norm -2000. range group 'East' or 'West'
+        zone gridpoint initialize velocity (0,0,0)
+        zone gridpoint initialize displacement (0,0,0)
+        zone face apply velocity-y 0 range group 'South' ;fix one side
+        zone face apply velocity-y [deform_rate] range group 'North'
+    endcommand
+end
+fish define bc_removepp_y
+    command
+        zone face apply-remove pore-pressure
+        zone gridpoint fix pore-pressure 1981 range group 'North'
+        zone gridpoint free pore-pressure range group 'Top' or 'Bottom' or 'East' or 'West'
+        zone gridpoint fix pore-pressure 981 range group 'South'
+;        zone face apply velocity-y [deform_rate] range group 'North'
+    endcommand
+end
+fish define bc_resetup_y
+    command
+        zone face apply pore-pressure 981 ;pressure boundary = permeable boundary
+        zone face apply stress-norm -2000 range group 'Top' or 'Bottom'
+        zone face apply stress-norm -2000 range group 'East' or 'West'
+        zone gridpoint fix velocity-y 0 range group 'South'
+        zone face apply velocity-y [deform_rate] range group 'North'
+    endcommand
+end
+;================================================test_x==========================================================
+fish define bc_setup_x
+    command
+    ;==========fluid flow model=========
+        zone fluid biot off ;[off] compressible water [on] imcompressible water / compressible grain
+        zone initialize fluid-density 1
+        zone gridpoint initialize fluid-tension -1e15 ; fluid tension limit, water is unbreakable
+        zone gridpoint initialize fluid-modulus [fm] ;compressibility of water (opposite force)
+        ;=========saturation====================
+        zone gridpoint initialize saturation 1.0;fully saturated cube
+        zone gridpoint initialize pore-pressure 981
+        zone face apply pore-pressure 981;pressure boundary = permeable boundary
+        ;=======bondary condition=======
+        zone initialize stress xx -2000. yy -2000. zz -2000. ;initial stress
+        zone face apply stress-norm -2000. range group 'North' or 'South'
+        zone face apply stress-norm -2000. range group 'Top' or 'Bottom'
+;        zone face apply stress-norm -2000 range group 'West' or 'East
+        zone gridpoint initialize velocity (0,0,0)
+        zone gridpoint initialize displacement (0,0,0)
+        zone face apply velocity-x 0 range group 'West' ;fix one side
+        zone face apply velocity-x [deform_rate] range group 'East'
+    endcommand
+end
+fish define bc_removepp_x
+    command
+        zone face apply-remove pore-pressure
+        zone gridpoint fix pore-pressure 1981 range group 'East'
+        zone gridpoint free pore-pressure range group 'Top' or 'Bottom' or 'North' or 'South'
+        zone gridpoint fix pore-pressure 981 range group 'West'
+;        zone face apply velocity-x [deform_rate] range group 'East'
+    endcommand
+end
+fish define bc_resetup_x
+    command
+        zone face apply pore-pressure 981 ;pressure boundary = permeable boundary
+        zone face apply stress-norm -2000 range group 'North' or 'South'
+        zone face apply stress-norm -2000 range group 'Top' or 'Bottom'
+        zone gridpoint fix velocity-x 0 range group 'West'
+        zone face apply velocity-x [deform_rate] range group 'East'
+    endcommand
+end

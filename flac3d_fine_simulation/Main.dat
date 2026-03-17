@@ -1,0 +1,107 @@
+model new
+model large-strain off
+model config fluid
+model fluid active on
+program call 'tables'
+;=======materila properties========
+[global realization_max_number = 2999]
+[global total_test_number = 3]
+zone delete
+history purge
+history delete
+
+fish define readRealization
+    loop global realization_number (0,realization_max_number,1)
+        loop global test_number (1,total_test_number,1)   
+            command
+            zone delete ;recreate zones for every test 
+            zone create brick size [size], [size], [size],...;20 zones in each axis
+                              point 0   0,   0,   0,...
+                              point 1   1,   0,   0 ... ;1m x 1m x 1m dimension
+                              point 2   0,   1,   0 ...
+                              point 3   0,   0,   1
+            zone face skin
+            endcommand
+            local f = file.open('realization_'+string(realization_number)+'.dat','read','text')
+            ;file.read(f,1)
+            local zp = zone.head
+            loop while zp # NULL
+                local realizationlist = file.read(f,1)
+                local realization = string.token(realizationlist(1),1) ;read from the second line
+                if realization = 1
+                    zone.group(zp)='shale'
+                    _young = 1.35e5
+                    _poisson= 0.3
+                    _cohesion= 150
+                    _dilation= 15
+                    _friction= 30
+                    _tension = 130
+                    _table_cohesion= 'shale_coh'
+                    _table_dilation= 'shale_dil'
+                    _table_friction= 'shale_fri'
+                    _table_tension= 'shale_ten'
+                    _porosity = 0.1;0.05
+                    _permeability = k_shale
+                else
+                    zone.group(zp)='sand'
+                    _young = 3.43e5
+                    _poisson= 0.3
+                    _cohesion= 0
+                    _dilation= 24.5
+                    _friction= 51.3
+                    _tension = 0
+                    _table_dilation= 'sand_dil'
+                    _table_friction= 'sand_fri'
+                    _porosity = 0.35
+                    _permeability = k_sand
+                endif
+                ;===mechanical property=====
+                zone.model(zp) = 'strain-softening'
+                ;zone.prop (zp, 'bulk') = _bul
+                ;zone.prop (zp, 'shea') = _shea
+                zone.prop (zp, 'young') = _young
+                zone.prop (zp, 'poisson') = _poisson
+                zone.prop (zp, 'cohesion') = _cohesion
+                zone.prop (zp, 'dilation') = _dilation
+                zone.prop (zp, 'friction') = _friction
+                zone.prop(zp, 'tension') = _tension
+                zone.prop (zp, 'table-cohesion') =  _table_cohesion
+                zone.prop (zp, 'table-dilation') =  _table_dilation
+                zone.prop (zp, 'table-friction') =  _table_friction
+                zone.prop (zp, 'table-tension') =  _table_tension
+                ;=====fluid property=====
+                zone.fluid.model(zp) = 'isotropic'
+                zone.fluid.prop(zp, 'porosity') = _porosity
+                zone.fluid.prop(zp, 'permeability') = _permeability
+                zp = zone.next(zp)
+            endloop
+;            file.close(f)
+;            ;======= Case 1: z direction ========  
+           if test_number == 1
+                command
+                history purge
+                history delete
+                program call 'test'
+                [test_z]
+               end_command
+               ;======= Case 2: y direction ========
+            else if test_number == 2
+                command
+                history purge
+                history delete
+                program call 'test'
+                [test_y]
+                end_command
+                ;======= Case 3: x direction========
+            else if test_number == 3
+                command
+                history purge
+                history delete
+                program call 'test'
+                [test_x]
+                end_command
+            endif
+        endloop
+    endloop
+end
+[readRealization]

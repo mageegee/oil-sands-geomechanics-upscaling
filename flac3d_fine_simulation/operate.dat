@@ -1,0 +1,86 @@
+
+fish define update_perm
+    local zp = zone.head
+    loop while zp # NULL
+        global ep_ = zone.prop(zp,'strain-shear-plastic')
+;            global es_ =zone.strain.vol.inc(zp)
+        global ev_ =(0.35+zone.strain.vol.inc(zp))/(1+zone.strain.vol.inc(zp))-0.35
+        if zone.group(zp)='sand' then
+        ;global es_ =math.mag(zone.strain.inc(zp))-float(ep_)
+            global knew_sand = k_sand*math.exp(ev_)*math.exp(40*ep_)
+            if knew_sand <= 5*k_sand
+                zone.fluid.prop(zp, 'permeability') = knew_sand
+            else 
+                knew_sand = 5*k_sand
+                zone.fluid.prop(zp, 'permeability') = knew_sand
+            endif
+        else zone.group(zp)='shale' then
+            global knew_shale= k_shale*math.exp(ev_)*math.exp(100*ep_)
+            if knew_shale <= 1000*k_shale
+                zone.fluid.prop(zp, 'permeability') = knew_shale
+            else 
+                knew_shale = 1000*k_shale
+                zone.fluid.prop(zp, 'permeability') = knew_shale
+            endif
+        endif
+        zp = zone.next(zp)
+    endloop
+end
+fish define step_ini_perm
+    command
+    model fluid on
+    model mechanical on
+    history interval 5
+    model fluid substep 1
+    model mechanical substep 1
+    model mechanical slave on
+    model fluid timestep fix 7e-4
+    model cycle 5
+;    [update_perm]
+    endcommand
+end
+fish define step
+    loop local ii (1,3)
+        command
+        model fluid on
+        model mechanical on
+        history interval 200
+        model fluid substep 1
+        model mechanical substep 1
+        model mechanical slave on
+        model fluid timestep fix 7e-4
+        model cycle 1000
+        [update_perm] 
+;                model save ['ss_z_realization_'+string(realization_number)+'_step'+string(ii)]
+        endcommand
+    endloop
+end
+fish define step_final
+    loop local ii (1,7)
+        command
+        model fluid on
+        model mechanical on
+        history interval 200
+        model fluid substep 1
+        model mechanical substep 1
+        model mechanical slave on
+        model fluid timestep fix 7e-4
+        model cycle 1000
+        [update_perm] 
+;                model save ['ss_z_realization_'+string(realization_number)+'_step'+string(ii)]
+        endcommand
+    endloop
+end
+;fish define fluid_step
+;    command
+;    model fluid on
+;    model mechanical off
+;    history interval 10
+;    model fluid substep 1
+;    model mechanical substep 1
+;    model mechanical slave on
+;    model fluid timestep fix 7e-4
+;    model cycle 10
+;;                model save ['ss_z_realization_'+string(realization_number)+'_step'+string(ii)]
+;    endcommand
+;end

@@ -1,0 +1,278 @@
+
+;================================================test_z==========================================================
+fish define perm_z_1
+    local replace = file.delete('z_perm_realization'+string(realization_number)+'_step1.dat')
+    local output = file.open('z_perm_realization'+string(realization_number)+'_step1.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define perm_z_2
+    local replace = file.delete('z_perm_realization'+string(realization_number)+'_step2.dat')
+    local output = file.open('z_perm_realization'+string(realization_number)+'_step2.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define perm_z_3
+    local replace = file.delete('z_perm_realization'+string(realization_number)+'_step3.dat')
+    local output = file.open('z_perm_realization'+string(realization_number)+'_step3.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define perm_z_4
+    local replace = file.delete('z_perm_realization'+string(realization_number)+'_step4.dat')
+    local output = file.open('z_perm_realization'+string(realization_number)+'_step4.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define perm_z_5
+    local replace = file.delete('z_perm_realization'+string(realization_number)+'_step5.dat')
+    local output = file.open('z_perm_realization'+string(realization_number)+'_step5.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define perm_z_6
+    local replace = file.delete('z_perm_realization'+string(realization_number)+'_step6.dat')
+    local output = file.open('z_perm_realization'+string(realization_number)+'_step6.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+
+
+;================================================test_y==========================================================
+fish define perm_y_1
+    local replace = file.delete('y_perm_realization'+string(realization_number)+'_step1.dat')
+    local output = file.open('y_perm_realization'+string(realization_number)+'_step1.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define perm_y_2
+    local replace = file.delete('y_perm_realization'+string(realization_number)+'_step2.dat')
+    local output = file.open('y_perm_realization'+string(realization_number)+'_step2.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define perm_y_3
+    local replace = file.delete('y_perm_realization'+string(realization_number)+'_step3.dat')
+    local output = file.open('y_perm_realization'+string(realization_number)+'_step3.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define perm_y_4
+    local replace = file.delete('y_perm_realization'+string(realization_number)+'_step4.dat')
+    local output = file.open('y_perm_realization'+string(realization_number)+'_step4.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define perm_y_5
+    local replace = file.delete('y_perm_realization'+string(realization_number)+'_step5.dat')
+    local output = file.open('y_perm_realization'+string(realization_number)+'_step5.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define perm_y_6
+    local replace = file.delete('y_perm_realization'+string(realization_number)+'_step6.dat')
+    local output = file.open('y_perm_realization'+string(realization_number)+'_step6.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+
+
+;================================================test_x==========================================================
+fish define perm_x_1
+    local replace = file.delete('x_perm_realization'+string(realization_number)+'_step1.dat')
+    local output = file.open('x_perm_realization'+string(realization_number)+'_step1.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define perm_x_2
+    local replace = file.delete('x_perm_realization'+string(realization_number)+'_step2.dat')
+    local output = file.open('x_perm_realization'+string(realization_number)+'_step2.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define perm_x_3
+    local replace = file.delete('x_perm_realization'+string(realization_number)+'_step3.dat')
+    local output = file.open('x_perm_realization'+string(realization_number)+'_step3.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define perm_x_4
+    local replace = file.delete('x_perm_realization'+string(realization_number)+'_step4.dat')
+    local output = file.open('x_perm_realization'+string(realization_number)+'_step4.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define perm_x_5
+    local replace = file.delete('x_perm_realization'+string(realization_number)+'_step5.dat')
+    local output = file.open('x_perm_realization'+string(realization_number)+'_step5.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define perm_x_6
+    local replace = file.delete('x_perm_realization'+string(realization_number)+'_step6.dat')
+    local output = file.open('x_perm_realization'+string(realization_number)+'_step6.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local permeability = zone.fluid.prop(zp, 'permeability')
+        permeability = permeability/md
+        local a_ii=string.build("%1",string(permeability))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
