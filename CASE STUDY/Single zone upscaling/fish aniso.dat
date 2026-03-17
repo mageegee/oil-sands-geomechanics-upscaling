@@ -1,0 +1,112 @@
+fish define stress_zz
+    global stress_zz= list.sum(-(zone.stress.zz(::zone.list)))/(size*size*size)
+end
+fish define stress_xx
+    global stress_xx = list.sum(-(zone.stress.xx(::zone.list)))/(size*size*size)
+end
+fish define stress_yy
+    global stress_yy= list.sum(-(zone.stress.yy(::zone.list)))/(size*size*size)
+end
+fish define q_x
+    global q_x = stress_xx - stress_zz ;deviatoric stress 
+end
+fish define q_z
+    global q_z = stress_zz - stress_xx ;deviatoric stress 
+end
+fish define q_y
+    global q_y = stress_yy - stress_xx;deviatoric stress 
+end
+
+
+fish define eps_zz
+    global eps_zz = list.sum(-zone.strain.inc.zz(::zone.list))/(size*size*size)
+    global zz = -gp.disp.z(gp.near(0,0,1))
+end
+fish define eps_xx
+    global eps_xx = list.sum(-zone.strain.inc.xx(::zone.list))/(size*size*size)
+    global xx = -gp.disp.x(gp.near(1,0,0))
+end
+fish define eps_yy
+    global eps_yy = list.sum(-zone.strain.inc.yy(::zone.list))/(size*size*size)
+    global yy = -gp.disp.y(gp.near(0,1,0))
+end
+
+fish define vsi
+    global vsi= list.sum(zone.strain.vol.inc(::zone.list))/(size*size*size)
+end
+
+fish define _pp
+    global _pp =list.sum(zone.pp(::zone.list))/(size*size*size)
+end
+
+fish define update_perm_z
+    local zp = zone.head
+    loop while zp # NULL
+        global ep_ = zone.prop(zp,'strain-shear-plastic-z')
+        global ev_ =(0.35+zone.strain.vol.inc(zp))/(1+zone.strain.vol.inc(zp))-0.35
+        global knew = k*math.exp(ev_)*math.exp(40*ep_)
+
+        if knew < 10*k
+            zone.fluid.prop(zp, 'permeability-z') = knew
+        else
+            knew = 10*k
+            zone.fluid.prop(zp, 'permeability-z') = knew
+        endif
+        zp = zone.next(zp)
+    endloop
+end
+fish define update_perm_y
+    local zp = zone.head
+    loop while zp # NULL
+        global ep_ = zone.prop(zp,'strain-shear-plastic-y')
+        global ev_ =(0.35+zone.strain.vol.inc(zp))/(1+zone.strain.vol.inc(zp))-0.35
+        global knew = k*math.exp(ev_)*math.exp(40*ep_)
+
+        if knew < 10*k
+            zone.fluid.prop(zp, 'permeability-y') = knew
+        else
+            knew = 10*k
+            zone.fluid.prop(zp, 'permeability-y') = knew
+        endif
+        zp = zone.next(zp)
+    endloop
+end
+fish define update_perm_x
+    local zp = zone.head
+    loop while zp # NULL
+        global ep_ = zone.prop(zp,'strain-shear-plastic-x')
+        global ev_ =(0.35+zone.strain.vol.inc(zp))/(1+zone.strain.vol.inc(zp))-0.35
+        global knew = k*math.exp(ev_)*math.exp(40*ep_)
+
+        if knew < 10*k
+            zone.fluid.prop(zp, 'permeability-x') = knew
+        else
+            knew = 10*k
+            zone.fluid.prop(zp, 'permeability-x') = knew
+        endif
+        zp = zone.next(zp)
+    endloop
+end
+
+fish define flow_z_z_1
+    local zp = zone.head
+    global flow_z_z_1=zone.flow.z(zp);/1000/9.89e-10
+end
+[flow_z_z_1]
+
+
+fish history stress_xx  ;history #1
+fish history stress_zz  ;2
+fish history stress_yy  ;3
+fish history  eps_xx    ;4
+fish history  eps_zz    ;5
+fish history  eps_yy    ;6
+fish history q_x    ;7
+fish history q_y    ;8
+fish history q_z    ;9
+
+fish history vsi ;10
+fish history zz ;11
+fish history _pp;12
+fish history knew
+fish history flow_z_z_1
