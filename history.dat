@@ -1,0 +1,121 @@
+
+fish define q_z
+    local stress_zz = list.sum(-(zone.stress.zz(::zone.list)))/(size*size*size)
+    local stress_xx = list.sum(-(zone.stress.xx(::zone.list)))/(size*size*size)
+    local stress_yy = list.sum(-(zone.stress.yy(::zone.list)))/(size*size*size)
+    global q_z = stress_zz - stress_xx ;deviatoric stress
+end
+fish define q_y
+    local stress_yy = list.sum(-(zone.stress.yy(::zone.list)))/(size*size*size)
+    local stress_zz = list.sum(-(zone.stress.zz(::zone.list)))/(size*size*size)
+    local stress_xx = list.sum(-(zone.stress.xx(::zone.list)))/(size*size*size)
+    global q_y = stress_yy - stress_xx ;deviatoric stress
+end
+fish define q_x
+    local stress_xx = list.sum(-(zone.stress.xx(::zone.list)))/(size*size*size)
+    local stress_zz = list.sum(-(zone.stress.zz(::zone.list)))/(size*size*size)
+    local stress_yy = list.sum(-(zone.stress.yy(::zone.list)))/(size*size*size)
+    global q_x = stress_xx - stress_zz ;deviatoric stress
+end
+
+;fish define q_x
+;    global q_x = stress_xx - stress_yy ;deviatoric stress
+;    global q_z = stress_zz - stress_xx ;deviatoric stress
+;    global q_y = stress_yy - stress_xx;deviatoric stress
+;end
+fish define pp_
+    global pp_=list.sum((zone.pp(::zone.list)))/(size*size*size)
+end
+;fish define p_
+;    global p_ = (stress_xx + stress_zz + stress_yy)/3-pp_ ;deviatoric stress
+;end
+fish define vsi
+    global vsi=list.sum((zone.strain.vol.inc(::zone.list)))/(size*size*size)
+end
+fish define ps_
+    local zp = zone.head
+    local total_strain = 0
+    loop while zp # null
+        local single_plastic_strain = zone.prop(zp,'strain-shear-plastic')
+        total_strain = total_strain + single_plastic_strain
+        zp = zone.next(zp)
+    endloop
+    ps_ = total_strain /(size*size*size)
+end
+fish define fluid_step
+    global totaltime = fluid.time.total
+    global timestep = fluid.timestep
+    global fluid_step=totaltime/timestep
+    global mech_step = mech.step
+    global global_step = global.step
+end
+fish define eps_xx
+    global eps_zz = -gp.disp.z(gp.near(0,0,1))
+    global eps_yy = -gp.disp.y(gp.near(0,1,0))
+    global eps_xx = -gp.disp.x(gp.near(1,0,0))
+end
+
+fish history name ['eps_xx_'+string(realization_number)] eps_xx;4
+fish history name ['eps_zz_'+string(realization_number)] eps_zz;5
+fish history name ['eps_yy_'+string(realization_number)] eps_yy;6
+fish history name ['vsi_'+string(realization_number)] vsi;7
+
+fish history name ['q_x_'+string(realization_number)] q_x;8
+fish history name ['q_y_'+string(realization_number)] q_y;9
+fish history name ['q_z_'+string(realization_number)] q_z;10
+
+;fish history name ['p_'+string(realization_number)] p_;11
+fish history name ['pp_'+string(realization_number)] pp_;12
+fish history name ['ps_'+string(realization_number)] ps_;13
+;fish history name ['global_step_'+string(realization_number)] global_step;13
+
+
+
+fish define history_z
+    command
+    history export ['q_z_'+string(realization_number)] vs ['eps_zz_'+string(realization_number)]...
+        table ['ss_z_qa_table_realization_'+string(realization_number)]            
+    history export ['vsi_'+string(realization_number)] vs ['eps_zz_'+string(realization_number)]...
+        table ['ss_z_vol_table_realization_'+string(realization_number)]
+    history export ['pp_'+string(realization_number)] vs ['eps_zz_'+string(realization_number)]...
+        table ['ss_z_pp_table_realization_'+string(realization_number)]
+    history export ['ps_'+string(realization_number)] vs ['eps_zz_'+string(realization_number)]...
+        table ['ss_z_ps_table_realization_'+string(realization_number)]
+    table ['ss_z_qa_table_realization_'+string(realization_number)] export ['ss_z_qa_table_realization_'+string(realization_number)] truncate
+    table ['ss_z_vol_table_realization_'+string(realization_number)] export ['ss_z_vol_table_realization_'+string(realization_number)] truncate
+    table ['ss_z_pp_table_realization_'+string(realization_number)] export ['ss_z_pp_table_realization_'+string(realization_number)] truncate
+    table ['ss_z_ps_table_realization_'+string(realization_number)] export ['ss_z_ps_table_realization_'+string(realization_number)] truncate
+    endcommand
+end
+fish define history_y
+    command
+    history export ['q_y_'+string(realization_number)] vs ['eps_yy_'+string(realization_number)]...
+        table ['ss_y_qa_table_realization_'+string(realization_number)]
+    history export ['vsi_'+string(realization_number)] vs ['eps_yy_'+string(realization_number)]...
+        table ['ss_y_vol_table_realization_'+string(realization_number)]
+    history export ['pp_'+string(realization_number)] vs ['eps_yy_'+string(realization_number)]...
+        table ['ss_y_pp_table_realization_'+string(realization_number)]
+    history export ['ps_'+string(realization_number)] vs ['eps_yy_'+string(realization_number)]...
+        table ['ss_y_ps_table_realization_'+string(realization_number)]
+    table ['ss_y_qa_table_realization_'+string(realization_number)] export ['ss_y_qa_table_realization_'+string(realization_number)] truncate
+    table ['ss_y_vol_table_realization_'+string(realization_number)] export ['ss_y_vol_table_realization_'+string(realization_number)] truncate
+    table ['ss_y_pp_table_realization_'+string(realization_number)] export ['ss_y_pp_table_realization_'+string(realization_number)] truncate
+    table ['ss_y_ps_table_realization_'+string(realization_number)] export ['ss_y_ps_table_realization_'+string(realization_number)] truncate
+    endcommand
+end
+fish define history_x
+    command
+    history export ['q_x_'+string(realization_number)] vs ['eps_xx_'+string(realization_number)]...
+        table ['ss_x_qa_table_realization_'+string(realization_number)]
+    history export ['vsi_'+string(realization_number)] vs ['eps_xx_'+string(realization_number)]...
+        table ['ss_x_vol_table_realization_'+string(realization_number)]
+    history export ['pp_'+string(realization_number)] vs ['eps_xx_'+string(realization_number)]...
+        table ['ss_x_pp_table_realization_'+string(realization_number)]
+    history export ['ps_'+string(realization_number)] vs ['eps_xx_'+string(realization_number)]...
+        table ['ss_x_ps_table_realization_'+string(realization_number)]
+    table ['ss_x_qa_table_realization_'+string(realization_number)] export ['ss_x_qa_table_realization_'+string(realization_number)]truncate
+    table ['ss_x_vol_table_realization_'+string(realization_number)] export ['ss_x_vol_table_realization_'+string(realization_number)] truncate
+    table ['ss_x_pp_table_realization_'+string(realization_number)] export ['ss_x_pp_table_realization_'+string(realization_number)] truncate
+    table ['ss_x_ps_table_realization_'+string(realization_number)] export ['ss_x_ps_table_realization_'+string(realization_number)] truncate
+    endcommand
+end

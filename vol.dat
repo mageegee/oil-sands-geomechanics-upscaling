@@ -1,0 +1,260 @@
+
+;================================================test_z==========================================================
+fish define vol_z_1
+    local replace = file.delete('z_volumetricstrain_realization'+string(realization_number)+'_step1.dat')
+    local output = file.open('z_volumetricstrain_realization'+string(realization_number)+'_step1.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define vol_z_2
+    local replace = file.delete('z_volumetricstrain_realization'+string(realization_number)+'_step2.dat')
+    local output = file.open('z_volumetricstrain_realization'+string(realization_number)+'_step2.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define vol_z_3
+    local replace = file.delete('z_volumetricstrain_realization'+string(realization_number)+'_step3.dat')
+    local output = file.open('z_volumetricstrain_realization'+string(realization_number)+'_step3.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define vol_z_4
+    local replace = file.delete('z_volumetricstrain_realization'+string(realization_number)+'_step4.dat')
+    local output = file.open('z_volumetricstrain_realization'+string(realization_number)+'_step4.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define vol_z_5
+    local replace = file.delete('z_volumetricstrain_realization'+string(realization_number)+'_step5.dat')
+    local output = file.open('z_volumetricstrain_realization'+string(realization_number)+'_step5.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define vol_z_6
+    local replace = file.delete('z_volumetricstrain_realization'+string(realization_number)+'_step6.dat')
+    local output = file.open('z_volumetricstrain_realization'+string(realization_number)+'_step6.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+
+
+;================================================test_y==========================================================
+fish define vol_y_1
+    local replace = file.delete('y_volumetricstrain_realization'+string(realization_number)+'_step1.dat')
+    local output = file.open('y_volumetricstrain_realization'+string(realization_number)+'_step1.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define vol_y_2
+    local replace = file.delete('y_volumetricstrain_realization'+string(realization_number)+'_step2.dat')
+    local output = file.open('y_volumetricstrain_realization'+string(realization_number)+'_step2.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define vol_y_3
+    local replace = file.delete('y_volumetricstrain_realization'+string(realization_number)+'_step3.dat')
+    local output = file.open('y_volumetricstrain_realization'+string(realization_number)+'_step3.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define vol_y_4
+    local replace = file.delete('y_volumetricstrain_realization'+string(realization_number)+'_step4.dat')
+    local output = file.open('y_volumetricstrain_realization'+string(realization_number)+'_step4.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define vol_y_5
+    local replace = file.delete('y_volumetricstrain_realization'+string(realization_number)+'_step5.dat')
+    local output = file.open('y_volumetricstrain_realization'+string(realization_number)+'_step5.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define vol_y_6
+    local replace = file.delete('y_volumetricstrain_realization'+string(realization_number)+'_step6.dat')
+    local output = file.open('y_volumetricstrain_realization'+string(realization_number)+'_step6.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+
+
+;================================================test_x==========================================================
+fish define vol_x_1
+    local replace = file.delete('x_volumetricstrain_realization'+string(realization_number)+'_step1.dat')
+    local output = file.open('x_volumetricstrain_realization'+string(realization_number)+'_step1.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define vol_x_2
+    local replace = file.delete('x_volumetricstrain_realization'+string(realization_number)+'_step2.dat')
+    local output = file.open('x_volumetricstrain_realization'+string(realization_number)+'_step2.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define vol_x_3
+    local replace = file.delete('x_volumetricstrain_realization'+string(realization_number)+'_step3.dat')
+    local output = file.open('x_volumetricstrain_realization'+string(realization_number)+'_step3.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define vol_x_4
+    local replace = file.delete('x_volumetricstrain_realization'+string(realization_number)+'_step4.dat')
+    local output = file.open('x_volumetricstrain_realization'+string(realization_number)+'_step4.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define vol_x_5
+    local replace = file.delete('x_volumetricstrain_realization'+string(realization_number)+'_step5.dat')
+    local output = file.open('x_volumetricstrain_realization'+string(realization_number)+'_step5.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end
+fish define vol_x_6
+    local replace = file.delete('x_volumetricstrain_realization'+string(realization_number)+'_step6.dat')
+    local output = file.open('x_volumetricstrain_realization'+string(realization_number)+'_step6.dat','append','text'); append new lines for each model running
+    local w = list
+    local zp = zone.head
+    loop while zp # null
+        local single_volumetric_strain = zone.strain.vol.inc(zp)
+        local a_ii=string.build("%1",string(single_volumetric_strain))
+        zp = zone.next(zp)
+        w=list.append(w,a_ii)
+    endloop
+    file.write(output,w)
+    file.close(output)
+end

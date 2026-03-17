@@ -1,0 +1,327 @@
+fish define test_z
+    command
+        program call 'operate'
+        program call 'history'
+        program call 'flow_zdirection'
+        program call 'bc'
+        program call 'ps'
+        program call 'vol'
+        program call 'perm'
+        [bc_setup_z]
+        [step_ini_perm]
+        [ps_z_1];plastic history
+        [vol_z_1];volumetric history
+        [perm_z_1];permeability history
+        [bc_removepp_z]
+        [fh_z_z_1]     
+        [bc_resetup_z]
+        [bc_removepp_y]
+        [fh_z_y_1]
+        [bc_resetup_z]
+        [bc_removepp_x]
+        [fh_z_x_1]
+        [flow_out_z_step1]
+;5
+        ;--------second part--------
+        [bc_resetup_z]
+        [step];3000
+        [ps_z_2]
+        [vol_z_2]
+        [perm_z_2]
+        [bc_removepp_z]
+        [fh_z_z_2]
+        [bc_resetup_z]
+        [bc_removepp_y]
+        [fh_z_y_2]
+        [bc_resetup_z]
+        [bc_removepp_x]
+        [fh_z_x_2]
+        [flow_out_z_step2]
+;3000        
+        ;--------third part--------
+        [bc_resetup_z]
+        [step];40100
+        [ps_z_3]
+        [vol_z_3]
+        [perm_z_3]
+        [bc_removepp_z]
+        [fh_z_z_3]
+        [bc_resetup_z]
+        [bc_removepp_y]
+        [fh_z_y_3]
+        [bc_resetup_z]
+        [bc_removepp_x]
+        [fh_z_x_3]
+        [flow_out_z_step3]
+;6000        
+        ;--------forth part--------
+        [bc_resetup_z]
+        [step];60200
+        [ps_z_4]
+        [vol_z_4]
+        [perm_z_4]
+        [bc_removepp_z]
+        [fh_z_z_4]
+        [bc_resetup_z]
+        [bc_removepp_y]
+        [fh_z_y_4]
+        [bc_resetup_z]
+        [bc_removepp_x]
+        [fh_z_x_4]
+        [flow_out_z_step4]
+;9000   
+        ;--------fivth part--------
+        [bc_resetup_z]
+        [step];80300
+        [ps_z_5]
+        [vol_z_5]
+        [perm_z_5]
+        [bc_removepp_z]
+        [fh_z_z_5]
+        [bc_resetup_z]
+        [bc_removepp_y]
+        [fh_z_y_5]
+        [bc_resetup_z]
+        [bc_removepp_x]
+        [fh_z_x_5]
+        [flow_out_z_step5]
+;12000      
+        ;--------final--------
+        [bc_resetup_z]
+        [step_final];19000
+        [ps_z_6]
+        [vol_z_6]
+        [perm_z_6]
+        [bc_removepp_z]
+        [fh_z_z_6]
+        [bc_resetup_z]
+        [bc_removepp_y]
+        [fh_z_y_6]
+        [bc_resetup_z]
+        [bc_removepp_x]
+        [fh_z_x_6]
+        [flow_out_z_step6]
+        [bc_resetup_z]
+        [step_final]
+        model save ['ss_z_realization_'+string(realization_number)]
+        [history_z]
+    endcommand
+end
+fish define test_y
+    command
+        program call 'operate'
+        program call 'history'
+        program call 'flow_ydirection'
+        program call 'bc'
+        program call 'ps'
+        program call 'vol'
+        program call 'perm'
+        [bc_setup_y]
+        [step_ini_perm]
+        [ps_y_1]
+        [vol_y_1]
+        [perm_y_1]
+        [bc_removepp_y]
+        [fh_y_y_1]
+        [bc_resetup_y]
+        [bc_removepp_z]
+        [fh_y_z_1]
+        [bc_resetup_y]
+        [bc_removepp_x]
+        [fh_y_x_1]
+        [flow_out_y_step1]
+        ;--------second part--------
+        [bc_resetup_y]
+        [step]
+        [ps_y_2]
+        [vol_y_2]
+        [perm_y_2]
+        [bc_removepp_y]
+        [fh_y_y_2]
+        [bc_resetup_y]
+        [bc_removepp_z]
+        [fh_y_z_2]
+        [bc_resetup_y]
+        [bc_removepp_x]
+        [fh_y_x_2]
+        [flow_out_y_step2]
+
+        ;--------third part--------
+        [bc_resetup_y]
+        [step]
+        [ps_y_3]
+        [vol_y_3]
+        [perm_y_3]
+        [bc_removepp_y]
+        [fh_y_y_3]
+        [bc_resetup_y]
+        [bc_removepp_z]
+        [fh_y_z_3]
+        [bc_resetup_y]
+        [bc_removepp_x]
+        [fh_y_x_3]
+        [flow_out_y_step3]
+
+        ;--------forth part--------
+        [bc_resetup_y]
+        [step]
+        [ps_y_4]
+        [vol_y_4]
+        [perm_y_4]
+        [bc_removepp_y]
+        [fh_y_y_4]
+        [bc_resetup_y]
+        [bc_removepp_z]
+        [fh_y_z_4]
+        [bc_resetup_y]
+        [bc_removepp_x]
+        [fh_y_x_4]
+        [flow_out_y_step4]
+
+        ;--------fivth part--------
+        [bc_resetup_y]
+        [step]
+        [ps_y_5]
+        [vol_y_5]
+        [perm_y_5]
+        [bc_removepp_y]
+        [fh_y_y_5]
+        [bc_resetup_y]
+        [bc_removepp_z]
+        [fh_y_z_5]
+        [bc_resetup_y]
+        [bc_removepp_x]
+        [fh_y_x_5]
+        [flow_out_y_step5]
+
+
+        ;--------final--------
+        [bc_resetup_y]
+        [step_final]
+        [ps_y_6]
+        [vol_y_6]
+        [perm_y_6]
+        [bc_removepp_y]
+        [fh_y_y_6]
+        [bc_resetup_y]
+        [bc_removepp_z]
+        [fh_y_z_6]
+        [bc_resetup_y]
+        [bc_removepp_x]
+        [fh_y_x_6]
+        [flow_out_y_step6]
+        [bc_resetup_y]
+        [step_final]
+        model save ['ss_y_realization_'+string(realization_number)]
+        [history_y]
+    endcommand
+end
+fish define test_x
+    command
+        program call 'operate'
+        program call 'history'
+        program call 'flow_xdirection'
+        program call 'bc'
+        program call 'ps'
+        program call 'vol'
+        program call 'perm'
+        [bc_setup_x]
+        [step_ini_perm]
+        [ps_x_1]
+        [vol_x_1]
+        [perm_x_1]
+        [bc_removepp_x]
+        [fh_x_x_1]
+        [bc_resetup_x]
+        [bc_removepp_y]
+        [fh_x_y_1]
+        [bc_resetup_x]
+        [bc_removepp_z]
+        [fh_x_z_1]
+        [flow_out_x_step1]
+ 
+        ;--------second part--------
+        [bc_resetup_x]
+        [step]
+        [ps_x_2]
+        [vol_x_2]
+        [perm_x_2]
+        [bc_removepp_x]
+        [fh_x_x_2]
+        [bc_resetup_x]
+        [bc_removepp_y]
+        [fh_x_y_2]
+        [bc_resetup_x]
+        [bc_removepp_z]
+        [fh_x_z_2]
+        [flow_out_x_step2]
+
+        ;--------third part--------
+        [bc_resetup_x]
+        [step]
+        [ps_x_3]
+        [vol_x_3]
+        [perm_x_3]
+        [bc_removepp_x]
+        [fh_x_x_3]
+        [bc_resetup_x]
+        [bc_removepp_y]
+        [fh_x_y_3]
+        [bc_resetup_x]
+        [bc_removepp_z]
+        [fh_x_z_3]
+        [flow_out_x_step3]
+
+        ;--------forth part--------
+        [bc_resetup_x]
+        [step]
+        [ps_x_4]
+        [vol_x_4]
+        [perm_x_4]
+        [bc_removepp_x]
+        [fh_x_x_4]
+        [bc_resetup_x]
+        [bc_removepp_y]
+        [fh_x_y_4]
+        [bc_resetup_x]
+        [bc_removepp_z]
+        [fh_x_z_4]
+        [flow_out_x_step4]
+
+        ;--------fivth part--------
+        [bc_resetup_x]
+        [step]
+        [ps_x_5]
+        [vol_x_5]
+        [perm_x_5]
+        [bc_removepp_x]
+        [fh_x_x_5]
+        [bc_resetup_x]
+        [bc_removepp_y]
+        [fh_x_y_5]
+        [bc_resetup_x]
+        [bc_removepp_z]
+        [fh_x_z_5]
+        [flow_out_x_step5]
+
+        ;--------final--------
+        [bc_resetup_x]
+        [step_final]
+        [ps_x_6]
+        [vol_x_6]
+        [perm_x_6]
+        [bc_removepp_x]
+        [fh_x_x_6]
+        [bc_resetup_x]
+        [bc_removepp_y]
+        [fh_x_y_6]
+        [bc_resetup_x]
+        [bc_removepp_z]
+        [fh_x_z_6]
+        [flow_out_x_step6]
+        [bc_resetup_x]
+        [step_final]
+        model save ['ss_x_realization_'+string(realization_number)]
+        [history_x]
+    endcommand
+end
