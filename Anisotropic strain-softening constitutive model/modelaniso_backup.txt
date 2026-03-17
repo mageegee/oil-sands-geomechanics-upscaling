@@ -1,0 +1,409 @@
+#include "modelaniso.h"
+//#include "base/src/version.h"
+#include <stdexcept>
+#include <cmath>
+#include <array>
+#include "version.txt"
+
+namespace models {
+
+    ModelAnisotropic::ModelAnisotropic(unsigned short option)
+        : ConstitutiveModel(option),
+          K_x_(0.0), K_y_(0.0), K_z_(0.0),
+          G_xy_(0.0), G_yz_(0.0), G_zx_(0.0),
+          E_x_(0.0), E_y_(0.0), E_z_(0.0),
+          nu_xy_(0.0), nu_yz_(0.0), nu_zx_(0.0),
+          A11_(0.0),A12_(0.0),A13_(0.0),A14_(0.0),A15_(0.0),A16_(0.0),
+                    A22_(0.0),A23_(0.0),A24_(0.0),A25_(0.0),A26_(0.0),
+                            A33_(0.0),A34_(0.0),A35_(0.0),A36_(0.0),
+                                        A44_(0.0),A45_(0.0),A46_(0.0),
+                                                A55_(0.0),A56_(0.0),
+                                                            A66_(0.0)
+
+      
+    {
+    }
+
+    UInt ModelAnisotropic::getMinorVersion() const {
+        return UPDATE_VERSION;
+    }
+
+    String ModelAnisotropic::getProperties() const {
+        return L"Ex,Ey,Ez,nuxy,nuyz,nuzx,Kx,Ky,Kz,Gxy,Gyz,Gzx";
+    }
+
+    String ModelAnisotropic::getStates() const {
+        return L"";
+    }
+
+    Double ModelAnisotropic::getBulkModulus() const {
+        Double M = (E_x_ > E_z_ ? E_x_ : E_z_);
+        Double N = (nu_yz_ > nu_zx_ ? nu_yz_ : nu_zx_);
+        return M / (3.0 * (1.0 - 2.0 * N));
+    }
+    Double ModelAnisotropic::getShearModulus() const {
+        Double Gmax = std::max({ G_xy_, G_yz_, G_zx_ });
+        return Gmax;
+    }
+
+    Double ModelAnisotropic::getConfinedModulus() const {
+        return getBulkModulus() + d4d3 * getShearModulus();
+    }
+    
+
+    Variant ModelAnisotropic::getProperty(UInt index) const {
+        switch (index) {
+        case 1: return E_x_;
+        case 2: return E_y_;
+        case 3: return E_z_;
+        case 4: return nu_xy_;
+        case 5: return nu_yz_;
+        case 6: return nu_zx_;
+        case 7: return K_x_;
+        case 8: return K_y_;
+        case 9: return K_z_;
+        case 10: return G_xy_;
+        case 11: return G_yz_;
+        case 12: return G_zx_;
+        default: throw std::runtime_error("Invalid property index Anisotropic.");
+        }
+    }
+
+    void ModelAnisotropic::setProperty(UInt index, const Variant& p, UInt restoreVersion) {
+        // First, store the input value.
+        ConstitutiveModel::setProperty(index, p, restoreVersion);
+        switch (index) {
+            // The independent parameters:
+        case 1: E_x_ = p.toDouble(); break;
+        case 2: E_y_ = p.toDouble(); break;
+        case 3: E_z_ = p.toDouble(); break;
+        case 4: nu_xy_ = p.toDouble(); break;
+        case 5: nu_yz_ = p.toDouble(); break;
+        case 6: nu_zx_ = p.toDouble(); break;
+        case 7: K_x_ = p.toDouble(); break;
+        case 8: K_y_ = p.toDouble(); break;
+        case 9: K_z_ = p.toDouble(); break;
+        case 10: G_xy_ = p.toDouble(); break;
+        case 11: G_yz_ = p.toDouble(); break;
+        case 12: G_zx_ = p.toDouble(); break;
+
+        default:
+            throw std::runtime_error("Invalid property index for input parameters Anisotropic.");
+        }
+    }
+
+
+    void ModelAnisotropic::copy(const ConstitutiveModel* m) {
+        ConstitutiveModel::copy(m);
+        const ModelAnisotropic* am = dynamic_cast<const ModelAnisotropic*>(m);
+        if (!am)
+            throw std::runtime_error("Internal error: constitutive model dynamic cast failed.");
+
+        // Copy anisotropic moduli and related properties.
+
+        E_x_ = am->E_x_;
+        E_y_ = am->E_y_;
+        E_z_ = am->E_z_;
+        nu_xy_ = am->nu_xy_;
+        nu_yz_ = am->nu_yz_;
+        nu_zx_ = am->nu_zx_;
+        K_x_ = am->K_x_;
+        K_y_ = am->K_y_;
+        K_z_ = am->K_z_;
+        G_xy_ = am->G_xy_;
+        G_yz_ = am->G_yz_;
+        G_zx_ = am->G_zx_;
+
+    }
+
+    void ModelAnisotropic::initialize(UByte d, State* s) {
+        ConstitutiveModel::initialize(d, s);
+        updateParameters();
+        // Validate independent parameters.
+        if (E_x_ <= 0.0 || E_y_ <= 0.0 || E_z_ <= 0.0)
+            throw std::runtime_error("Anisotropic Model - Invalid Young's moduli.");
+        if (G_xy_ <= 0.0 || G_yz_ <= 0.0 || G_zx_ <= 0.0)
+            throw std::runtime_error("Anisotropic Model - Invalid shear moduli.");
+        if (nu_xy_ >= 0.5 || nu_xy_ < -1.0 ||
+            nu_yz_ >= 0.5 || nu_yz_ < -1.0 ||
+            nu_zx_ >= 0.5 || nu_zx_ < -1.0)
+            throw std::runtime_error("Anisotropic Model - Invalid Poisson ratios.");
+        buildMatrix(E_x_, E_y_, E_z_, nu_yz_, nu_zx_, nu_xy_, G_yz_, G_zx_, G_xy_);
+        
+    }
+
+    void ModelAnisotropic::run(UByte d, State* s) {
+        // Perform base class run operations.
+        ConstitutiveModel::run(d, s);
+
+        // If a modulus reduction factor is specified, update the moduli accordingly.
+        if (s->modulus_reduction_factor_ > 0.0)
+            moduliReduction(s->modulus_reduction_factor_);
+
+        // Update the stress state based on the current strain.
+        elasticTrial(s);
+
+        // Indicate that viscous effects are present (or active) for this model.
+        s->viscous_ = true;
+    }
+    //------------------------------------------------------------------------------
+    // Update the stress state based on the current strain input.
+    // The engineering shear strains are doubled before applying the stiffness matrix.
+    //------------------------------------------------------------------------------
+    void ModelAnisotropic::elasticTrial(State* s) {
+        // Compute engineering shear strain components (doubled)
+        Double DG12 = 2.0 * s->stnE_.s12();
+        Double DG13 = 2.0 * s->stnE_.s13();
+        Double DG23 = 2.0 * s->stnE_.s23();
+
+        // Extract normal strain components.
+        Double DS11 = s->stnE_.s11();
+        Double DS22 = s->stnE_.s22();
+        Double DS33 = s->stnE_.s33();
+
+        // Update stress components using the global stiffness matrix Aij.
+        s->stnS_.rs11() += A11_ * DS11 + A12_ * DS22 + A13_ * DS33 + A14_ * DG12 + A15_ * DG13 + A16_ * DG23;
+        s->stnS_.rs22() += A12_ * DS11 + A22_ * DS22 + A23_ * DS33 + A24_ * DG12 + A25_ * DG13 + A26_ * DG23;
+        s->stnS_.rs33() += A13_ * DS11 + A23_ * DS22 + A33_ * DS33 + A34_ * DG12 + A35_ * DG13 + A36_ * DG23;
+        s->stnS_.rs12() += A14_ * DS11 + A24_ * DS22 + A34_ * DS33 + A44_ * DG12 + A45_ * DG13 + A46_ * DG23;
+        s->stnS_.rs13() += A15_ * DS11 + A25_ * DS22 + A35_ * DS33 + A45_ * DG12 + A55_ * DG13 + A56_ * DG23;
+        s->stnS_.rs23() += A16_ * DS11 + A26_ * DS22 + A36_ * DS33 + A46_ * DG12 + A56_ * DG13 + A66_ * DG23;
+    }
+    void ModelAnisotropic::elasticTrial(State* s) {
+        // Use the same basic isotropic relationships to update stress.
+
+        // Extract normal strain components.
+        Double e11 = s->stnE_.s11();
+        Double e22 = s->stnE_.s22();
+        Double e33 = s->stnE_.s33();
+
+        // Update normal stress components.
+        s->stnS_.rs11() += e11 * e1_[2] + (e22 + e33) * e2_[2];
+        s->stnS_.rs22() += (e11 + e33) * e2_[2] + e22 * e1_[2];
+        s->stnS_.rs33() += (e11 + e22) * e2_[2] + e33 * e1_[2];
+
+        // Update shear stress components.
+        s->stnS_.rs12() += s->stnE_.s12() * g2_[2];
+        s->stnS_.rs13() += s->stnE_.s13() * g2_[2];
+        s->stnS_.rs23() += s->stnE_.s23() * g2_[2];
+    }
+
+    ////------------------------------------------------------------------------------
+    //// Multiply two 6x6 matrices: b3 = b1 * b2.
+    ////------------------------------------------------------------------------------
+    //void ModelAnisotropic::xmatmul(Double b1[6][6], Double b2[6][6], Double b3[6][6]) {
+    //    for (UInt i = 0; i < 6; i++) {
+    //        for (UInt j = 0; j < 6; j++) {
+    //            Double sum = 0.0;
+    //            for (UInt m = 0; m < 6; m++) {
+    //                sum += b1[i][m] * b2[m][j];
+    //            }
+    //            b3[i][j] = sum;
+    //        }
+    //    }
+    //}
+
+    //------------------------------------------------------------------------------
+    // Invert a 6x6 matrix 'b' in-place.
+    // Returns false if the matrix is singular (non-invertible), true otherwise.
+    //------------------------------------------------------------------------------
+    //bool ModelAnisotropic::xmatinv(Double b[6][6]) {
+    //    bool flag = true;
+    //    for (UInt i = 0; i < 6; i++) {
+    //        Double bii = b[i][i];
+    //        if (bii == 0.0) {
+    //            // Matrix is singular
+    //            return false;
+    //        }
+    //        // Normalize the pivot row.
+    //        for (UInt k = 0; k < 6; k++) {
+    //            b[i][k] /= bii;
+    //        }
+    //        // Replace the diagonal element with its reciprocal.
+    //        b[i][i] = 1.0 / bii;
+    //        // Eliminate the i-th column in other rows.
+    //        for (UInt j = 0; j < 6; j++) {
+    //            if (j != i) {
+    //                Double bji = b[j][i];
+    //                for (UInt k = 0; k < 6; k++) {
+    //                    b[j][k] -= bji * b[i][k];
+    //                }
+    //                // Store the modified off-diagonal entry.
+    //                b[j][i] = -bji * b[i][i];
+    //            }
+    //        }
+    //    }
+    //    return true;
+    //}
+    bool ModelAnisotropic::xmatinv(Double b[6][6]) {
+        bool flag;
+        Double bii, bji;
+        UInt i, j, k;
+        flag = true;
+        for (i = 0; i < 6; i++) {
+            bii = b[i][i];
+            if (bii == 0.0) {
+                flag = false;
+                return(flag);
+            }
+            for (k = 0; k < 6; k++) b[i][k] = b[i][k] / bii;
+            b[i][i] = 1.0 / bii;
+            for (j = 0; j < 6; j++) {
+                if (j != i) {
+                    bji = b[j][i];
+                    for (k = 0; k < 6; k++) b[j][k] = b[j][k] - bji * b[i][k];
+                    b[j][i] = -bji * b[i][i];
+                }
+            }
+        }
+        return(flag);
+    }
+    void ModelAnisotropic::xmatmul(Double b1[6][6], Double b2[6][6], Double b3[6][6]) {
+        Double sum;
+        UInt i, j, m;
+        for (i = 0; i < 6; i++) {
+            for (j = 0; j < 6; j++) {
+                sum = 0.0;
+                for (m = 0; m < 6; m++) sum = sum + b1[i][m] * b2[m][j];
+                b3[i][j] = sum;
+            }
+        }
+    }
+
+
+    void ModelAnisotropic::buildMatrix(const Double& E_x, const Double& E_y, const Double& E_z,
+                         const Double& nu_xy, const Double& nu_yz, const Double& nu_zx,
+                         const Double& G_xy, const Double& G_yz, const Double& G_zx)
+    {
+        // Declare temporary 6x6 matrices.
+        Double adBB[6][6], adTT[6][6], adTTa[6][6], adTTw[6][6];
+
+        // Initialize all matrices to zero.
+        for (UInt i = 0; i < 6; i++) {
+            for (UInt j = 0; j < 6; j++) {
+                adBB[i][j] = 0.0;
+                adTT[i][j] = 0.0;
+                adTTa[i][j] = 0.0;
+                adTTw[i][j] = 0.0;
+            }
+        }
+
+        // --- Build local compliance matrix ---
+        // Normal compliance terms:
+        if (E_x != 0.0)
+            adBB[0][0] = 1.0 / E_x;
+        if (E_y != 0.0)
+            adBB[0][1] = -nu_xy / E_x;
+        if (E_z != 0.0)
+            adBB[0][2] = -nu_zx / E_z;
+        // Use symmetry:
+        adBB[1][0] = adBB[0][1];
+        if (E_y != 0.0)
+            adBB[1][1] = 1.0 / E_y;
+        if (E_z != 0.0)
+            adBB[1][2] = -nu_yz / E_y;
+        adBB[2][0] = adBB[0][2];
+        adBB[2][1] = adBB[1][2];
+        if (E_z != 0.0)
+            adBB[2][2] = 1.0 / E_z;
+
+        // Shear compliance terms (only diagonal entries):
+        if (G_xy != 0.0)
+            adBB[3][3] = 1.0 / G_xy;
+        if (G_yz != 0.0)
+            adBB[4][4] = 1.0 / G_yz;
+        if (G_zx != 0.0)
+            adBB[5][5] = 1.0 / G_zx;
+
+        // --- Invert the local compliance matrix ---
+        if (!xmatinv(adBB))
+            throw std::runtime_error("Compliance matrix inversion failed in buildMatrix.");
+
+        // --- Global stiffness matrix computation ---
+        // In the absence of transformation, set the transformation matrix adTT to identity.
+        for (UInt i = 0; i < 6; i++) {
+            adTT[i][i] = 1.0;
+        }
+        // Multiply: adTTw = adBB * I  (results in adTTw = adBB)
+        xmatmul(adBB, adTT, adTTw);
+        // Compute the transpose of the identity (still identity) into adTTa.
+        for (UInt i = 0; i < 6; i++) {
+            for (UInt j = 0; j < 6; j++) {
+                adTTa[i][j] = adTT[j][i];
+            }
+        }
+        // Multiply: final global stiffness matrix adBB = I * adTTw = adTTw.
+        xmatmul(adTTa, adTTw, adBB);
+
+        // --- Assign the resulting stiffness matrix components to member variables ---
+        A11_ = adBB[0][0];
+        A12_ = adBB[0][1];
+        A13_ = adBB[0][2];
+        A14_ = adBB[0][3];
+        A15_ = adBB[0][4];
+        A16_ = adBB[0][5];
+
+        A22_ = adBB[1][1];
+        A23_ = adBB[1][2];
+        A24_ = adBB[1][3];
+        A25_ = adBB[1][4];
+        A26_ = adBB[1][5];
+
+        A33_ = adBB[2][2];
+        A34_ = adBB[2][3];
+        A35_ = adBB[2][4];
+        A36_ = adBB[2][5];
+
+        A44_ = adBB[3][3];
+        A45_ = adBB[3][4];
+        A46_ = adBB[3][5];
+
+        A55_ = adBB[4][4];
+        A56_ = adBB[4][5];
+
+        A66_ = adBB[5][5];
+    }
+
+
+
+    bool ModelAnisotropic::updateParameters() {
+        // Update moduli for each direction
+        e1_[0] = K_x_ + G_xy_ * (4.0 / 3.0);
+        e2_[0] = K_x_ - G_xy_ * (2.0 / 3.0);
+        g2_[0] = 2.0 * G_xy_;
+
+        e1_[1] = K_y_ + G_yz_ * (4.0 / 3.0);
+        e2_[1] = K_y_ - G_yz_ * (2.0 / 3.0);
+        g2_[1] = 2.0 * G_yz_;
+
+        e1_[2] = K_z_ + G_zx_ * (4.0 / 3.0);
+        e2_[2] = K_z_ - G_zx_ * (2.0 / 3.0);
+        g2_[2] = 2.0 * G_zx_;
+
+        return true;
+    }
+
+    std::array<Double, 3> ModelAnisotropic::moduliReduction(const Double& factor) {
+        // Use the member variable 'newG' to store the reduced shear moduli.
+        newG[0] = G_xy_ * factor;
+        newG[1] = G_yz_ * factor;
+        newG[2] = G_zx_ * factor;
+
+        // Update directional moduli accordingly.
+        e1_[0] = K_x_ + newG[0] * (4.0 / 3.0);
+        e2_[0] = K_x_ - newG[0] * (2.0 / 3.0);
+        g2_[0] = 2.0 * newG[0];
+
+        e1_[1] = K_y_ + newG[1] * (4.0 / 3.0);
+        e2_[1] = K_y_ - newG[1] * (2.0 / 3.0);
+        g2_[1] = 2.0 * newG[1];
+
+        e1_[2] = K_z_ + newG[2] * (4.0 / 3.0);
+        e2_[2] = K_z_ - newG[2] * (2.0 / 3.0);
+        g2_[2] = 2.0 * newG[2];
+
+        return newG; // Return all three reduced shear moduli.
+    }
+
+} // namespace models
+//EOF
